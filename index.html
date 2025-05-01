@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Tea Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+      width: 70%;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+
+  <input type="number" id="rate" placeholder="Wholesale Rate per kg (Rs)" />
+  <button onclick="calculate()">Calculate</button>
+
+  <table id="resultTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Packet Size</th>
+        <th>Tea Cost/Packet (Rs)</th>
+        <th>Packet Cost (Rs)</th>
+        <th>Total Per Unit Price (Rs)</th>
+        <th>Total for 100 Packets (Rs)</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <script>
+    function calculate() {
+      const rate = parseFloat(document.getElementById('rate').value);
+      if (isNaN(rate) || rate <= 0) {
+        alert('Please enter a valid wholesale rate');
+        return;
+      }
+
+      const packets = [
+        { size: 28, packetCost: 3 },
+        { size: 100, packetCost: 6 },
+        { size: 250, packetCost: 8 }
+      ];
+
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+
+      packets.forEach(({ size, packetCost }) => {
+        const teaCost = (rate / 1000) * size;
+        const unitPrice = teaCost + packetCost;
+        const total100 = unitPrice * 100;
+
+        const row = `<tr>
+          <td>${size}g</td>
+          <td>${teaCost.toFixed(2)}</td>
+          <td>${packetCost.toFixed(2)}</td>
+          <td>${unitPrice.toFixed(2)}</td>
+          <td>${total100.toFixed(2)}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+
+      document.getElementById('resultTable').style.display = 'table';
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log("Service Worker Registered"));
+    }
+  </script>
+
+</body>
+</html>
